@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Up Game</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="margin-bottom: 30px">
+        <div class="container">
+          <a class="navbar-brand" href="index.html">Top UP Game</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link active" href="produk.html">Produk</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="pesan.html">Pesan</a>
+                </li>
+              </ul>
+          </div>
+        </div>
+    </nav>
+    <div id="app">
+        <div class="container">
+            <div class="py-5 text-center">
+              <h2>Top Up Game</h2>
+            </div>
+            <h4 class="mb-3" id="form"></h4>
+                <form class="needs-validation" style="margin-bottom: 10%;" novalidate>
+                    <div class="mb-3">
+                        <label for="name" class="col-form-label">Name Game</label>
+                        <input  v-model="name" type="text" class="form-control" id="name" placeholder="" value="" required>
+                        <div class="invalid-feedback">
+                            Name Game.
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="col-form-label">Produk</label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="radio" name="diamond" id="produk" value="diamond" v-model="game">
+                              <label class="form-check-label" v-model="game" for="diamond">Diamond</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="radio" name="uc" id="produk" value="uc" v-model="game">
+                              <label class="form-check-label" v-model="game" for="freefire">UC</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="radio" name="points" id="produk" value="points" v-model="game">
+                              <label class="form-check-label" v-model="game" for="points">Points</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                          <label for="phone" class="col-form-label">price</label>
+                          <input v-model="diamond" type="text" class="form-control" id="harga" placeholder="0k" required>
+                          <div class="invalid-feedback">
+                            Price.
+                          </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="phone" class="col-form-label">Total</label>
+                            <input v-model="total" type="text" class="form-control" id="jumlah" placeholder="total" required>
+                            <div class="invalid-feedback">
+                              Price.
+                            </div>
+                        </div>
+                      </div>
+                    <hr class="mb-4">
+                    <button v-if="!editMode && !deleteMode" v-on:click="createUser" class="btn btn-primary btn-md btn-primary d-grid  mx-auto" type="submit"><a href="#table" class="text-decoration-none text-white">Submit Data</a></button>
+                    <button v-if="editMode" v-on:click="updateUser" class="btn btn-warning btn-md btn-primary d-grid mx-auto" type="submit"><a href="#table" class="text-decoration-none text-dark">Update Data</a></button>
+                    <button v-if="deleteMode" v-on:click="deleteUser" class="btn btn-danger btn-md btn-primary d-grid mx-auto" style="margin-left: 50%;" type="submit"><a href="#table" class="text-decoration-none text-white">Delete Data</a></button>       
+                </form>
+                <div class="col-md-12">
+                    <h4 class="mb-3" id="table">Produk</h4>
+                    <table class="table">
+                        <thead class="table-info text-center">
+                            <tr>
+                                <th>ID</th>
+                                <th>Produk</th>
+                                <th>Name Game</th>
+                                <th>Harga</th>
+                                <th>Jumlah</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+                            <tr v-for="produk in produk">
+                                <td>{{ produk.id }}</td>
+                                <td>{{ produk.produk }}</td>
+                                <td>{{ produk.nama }}</td>
+                                <td>{{ produk.harga }}</td>
+                                <td>{{ produk.jumlah }}</td>
+                                <td><button class="btn btn-md btn-warning" v-on:click="getEdit(produk)"><a href="#form" class="text-decoration-none text-dark">Update</a></button></td>
+                                <td><button class="btn btn-danger" v-on:click="getDelete(produk)"><a href="#form" class="text-decoration-none text-white">Delete</a></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                <div v-if="message" class="alert alert-success" role="alert">
+                    {{ message }}
+                </div>
+            </div>
+            <button class="btn btn-md btn-primary d-grid mx-auto" v-on:click="resetForm()"><a href="#form" class="text-decoration-none text-white">Create new produk</a></button>
+        </div>
+        <footer class="my-5 pt-5 text-muted text-center text-small">
+            <p class="mb-1">&copy; Joel Pakpahan</p>
+        </footer>
+    </div>
+    
+
+    <!-- Axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script>
+        var app = new Vue ({
+            el: '#app',
+            data: {
+                errors: [],
+                message: null,
+                produk:[],
+                produkIdEdit: null,
+                produkIdDelete: null,
+                editMode: false,
+                deleteMode: false,
+                produk: '',
+                nama: '',
+                harga: '',
+                jumlah: '',
+            },
+            mounted: function() {
+                this.getUser();
+            },
+            methods: {
+                getUser() {
+                    axios.get('https://621ccd50768a4e1020b59e97.mockapi.io/produk')
+                        .then(response => {
+                            this.produk = response.data;
+                            console.log(response);
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
+                },
+                createUser: function(){
+                    axios.post('https://621ccd50768a4e1020b59e97.mockapi.io/produk', {
+                        produk: this.produk,
+                        nama: this.nama,
+                        harga: this.harga,
+                        jumlah: this.jumlah,
+
+                    })
+                    .then(response => {
+                            this.getUser();
+                            this.message = "Your data has been submitted";
+                            console.log(response);
+                    })
+                    .catch(error => {
+                            console.log(error);
+                    });
+                },
+                resetForm: function () {
+                    this.message = null;
+                    this.editMode = false;
+                    this.deleteMode = false;
+                    this.produkIdEdit = null;
+                    this.produk = null;
+                    this.nama = null;
+                    this.harga = null;
+                    this.jumlah = null;
+                },
+                getEdit: function (produk) {
+                    this.message = null;
+                    this.editMode = false;
+                    this.deleteMode = false;
+                    this.produkIdEdit = null;
+                    this.produk = null;
+                    this.nama = null;
+                    this.harga = null;
+                    this.jumlah = null;
+                },
+                getDelete: function (produk) {
+                    this.message = null;
+                    this.editMode = false;
+                    this.deleteMode = false;
+                    this.produkIdEdit = null;
+                    this.produk = null;
+                    this.nama = null;
+                    this.harga = null;
+                    this.jumlah = null;
+                },
+                updateUser: function () {
+                    axios.put(`https://621ccd50768a4e1020b59e97.mockapi.io/produk/${this.produkIdEdit}`, {
+                        produk: this.produk,
+                        nama: this.nama,
+                        harga: this.harga,
+                        jumlah: this.jumlah,
+                        })
+                        .then(res => {
+                            // handle success
+                            this.message = "Your data has been updated";
+                            this.getUser();
+                        })
+                        .catch(err => {
+                            // handle error
+                            console.log(err);
+                        })
+                },
+                // Delete produk
+                deleteUser: function () {
+                    axios.delete(`https://621ccd50768a4e1020b59e97.mockapi.io/produk/${this.produkIdDelete}`)
+                        .then(res => {
+                            this.message = "Your data has been deleted";
+                            this.getUser();
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                }
+            }
+        })
+        
+    </script>
+
+
+</body>
+</html>
